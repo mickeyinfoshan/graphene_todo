@@ -1,6 +1,6 @@
-from graphene import ObjectType, Field, relay, String
+from graphene import ObjectType, Field, relay, String, Int, List, Boolean
 from graphene.contrib.django.types import DjangoNode
-from graphql_relay.node.node import from_global_id
+from graphql_relay.node.node import from_global_id, to_global_id
 from graphql_relay.connection.arrayconnection import offset_to_cursor
 
 import graphene
@@ -11,12 +11,21 @@ class User(DjangoNode):
     class Meta:
         model = models.UserModel
         
+    totalCount = Int()
+    completedCount = Int()
+    
+    def resolve_totalCount(self, args, info):
+        return self.todos.count()
+    
+    def resolve_completedCount(self, args, info):
+        return self.todos.filter(completed=True).count()
+        
 class Todo(DjangoNode):
     class Meta:
         model = models.TodoModel
         filter_fields = ['completed']
 
-class CompleteTodo(relay.ClientIDMutation):
+class ToggleTodoComplete(relay.ClientIDMutation):
     
     class Input:
         id = String(required=True)
@@ -32,7 +41,7 @@ class CompleteTodo(relay.ClientIDMutation):
         todo.completed = not todo.completed
         todo.save()
         viewer = todo.user
-        return CompleteTodo(todo=todo, viewer=viewer)
+        return ToggleTodoComplete(todo=todo, viewer=viewer)
 
 class RemoveTodo(relay.ClientIDMutation):
 
@@ -70,16 +79,34 @@ class AddTodo(relay.ClientIDMutation):
 
 class ClearCompletedTodo(relay.ClientIDMutation):
     viewer = Field(User)
+    deletedTodoIds = List(String())
     class Input:
         pass
     @classmethod
     def mutate_and_get_payload(cls, input, info):
         viewer = get_viewer(info.request_context)
-        viewer.todos.filter(completed=True).delete()
-        return ClearCompletedTodo(viewer=viewer)
+        todos = viewer.todos.filter(completed=True)
+        deletedTodoIds = []
+        for todo in todos:
+            deletedTodoIds.append(to_global_id("todo", todo.id))
+        todos.delete()
+        return ClearCompletedTodo(viewer=viewer, deletedTodoIds=deletedTodoIds)
     
+class SetCompleteAll(relay.ClientIDMutation):
+    viewer = Field(User)
+    
+    class Input:
+        complete = Boolean(required=True)
+        
+    @classmethod
+    def mutate_and_get_payload(cls, input, info):
+        viewer = get_viewer(info.request_context)
+        complete = input.get('complete')
+        viewer.todos.update(completed=complete)
+        return SetCompleteAll(viewer=viewer)    
 
 class Query(ObjectType):
+    node = relay.NodeField()
     user = relay.NodeField(User)
     todo = relay.NodeField(Todo)
     viewer = Field(User)
@@ -92,10 +119,12 @@ class Query(ObjectType):
         abstract = True
 
 class Mutation(ObjectType):
-    completeTodo = Field(CompleteTodo)
+    toggleTodoComplete = Field(ToggleTodoComplete)
     removeTodo = Field(RemoveTodo)
     clearCompletedTodo = Field(ClearCompletedTodo)
     addTodo = Field(AddTodo)
+    setCompleteAll = Field(SetCompleteAll)
+    
     class Meta:
         abstract = True
 

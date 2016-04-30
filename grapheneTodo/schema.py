@@ -1,4 +1,5 @@
 import graphene
+from graphene.contrib.django.debug import DjangoDebugPlugin
 
 import todos.schema
 
