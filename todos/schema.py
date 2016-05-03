@@ -103,7 +103,27 @@ class SetCompleteAll(relay.ClientIDMutation):
         viewer = get_viewer(info.request_context)
         complete = input.get('complete')
         viewer.todos.update(completed=complete)
-        return SetCompleteAll(viewer=viewer)    
+        return SetCompleteAll(viewer=viewer)
+        
+class UpdateTodoText(relay.ClientIDMutation):
+    
+    class Input:
+        id = String(required=True)
+        text = String(required=True)
+    
+    todo = Field(Todo)
+    viewer = Field(User)
+    
+    @classmethod
+    def mutate_and_get_payload(cls, input, info):
+        global_id = input.get("id")
+        text = input.get("text")
+        id = from_global_id(global_id).id
+        todo = models.TodoModel.objects.get(pk=id)
+        todo.text = text
+        todo.save()
+        viewer = todo.user
+        return UpdateTodoText(todo=todo, viewer=viewer)    
 
 class Query(ObjectType):
     node = relay.NodeField()
@@ -124,6 +144,7 @@ class Mutation(ObjectType):
     clearCompletedTodo = Field(ClearCompletedTodo)
     addTodo = Field(AddTodo)
     setCompleteAll = Field(SetCompleteAll)
+    updateTodoText = Field(UpdateTodoText)
     
     class Meta:
         abstract = True
