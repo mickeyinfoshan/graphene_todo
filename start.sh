@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python manage.py runserver && cd relayTodo && npm start
+python manage.py runserver & 
+cd ./relayTodo && npm start
