@@ -12,6 +12,11 @@ chmod +x ./*.sh
 ```
 ./preinstall.sh
 ```
+or
+```
+pip install -r 'requirements.txt'
+cd relayTodo && npm install
+```
 
 ## Running
 
@@ -19,6 +24,11 @@ Start a local server:
 
 ```
 ./start.sh
+```
+or
+```
+python manage runserver
+cd relayTodo && npm start
 ```
 
 Now you can open your browser and visit `localhost:3000`.
