@@ -18,6 +18,13 @@ pip install -r 'requirements.txt'
 cd relayTodo && npm install
 ```
 
+## Database migration
+```
+python manage.py makemigrations
+python manage.py makemigrations todos
+python manage.py migrate
+```
+
 ## Running
 
 Start a local server:
