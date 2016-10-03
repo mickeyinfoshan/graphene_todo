@@ -1,29 +1,29 @@
 import Relay from 'react-relay'
 
 class AddTodo extends Relay.Mutation {
-    
+
     static fragments = {
         viewer : () => Relay.QL`
             fragment on User {
                 id,
                 totalCount
-            }  
+            }
         `,
     };
-    
+
     getMutation() {
         return Relay.QL`mutation{
             addTodo
         }`;
     }
-    
+
     getVariables() {
         return {text : this.props.text}
     }
-    
+
     getFatQuery () {
         return Relay.QL`
-            fragment on AddTodo @relay(pattern:true) {
+            fragment on AddTodoPayload @relay(pattern:true) {
                 todoEdge,
                 viewer {
                     todos,
@@ -32,7 +32,7 @@ class AddTodo extends Relay.Mutation {
             }
         `
     }
-    
+
     getConfigs() {
         return [{
             type : "RANGE_ADD",
@@ -46,13 +46,13 @@ class AddTodo extends Relay.Mutation {
             }
         }]
     }
-    
+
      getOptimisticResponse() {
        return {
           todoEdge: {
              node: {
                 text : this.props.text,
-                completed : false 
+                completed : false
             },
           },
           viewer: {

@@ -17,14 +17,14 @@ function getActiveCount(viewer) {
 }
 
 class App extends React.Component {
- 
+
   constructor(props) {
     super(props);
     this.state = {
       showing : getShowingFromHash()
     };
   }
-  
+
   componentDidMount() {
       window.onhashchange = ()=>{
         this.setState({
@@ -32,21 +32,21 @@ class App extends React.Component {
         });
       };
   }
- 
+
   addTodo = (text)=>{
     Relay.Store.commitUpdate(new AddTodo({
-      text, 
+      text,
       viewer : this.props.viewer
     }));
   };
-  
+
   setCompleteAll = (complete)=> {
     Relay.Store.commitUpdate(new SetCompleteAll({
       viewer : this.props.viewer,
       complete
     }))
   }
-  
+
   toggleAll = ()=> {
     var shouldComplete = false;
     if(getActiveCount(this.props.viewer) > 0) {
@@ -54,7 +54,7 @@ class App extends React.Component {
     }
     this.setCompleteAll(shouldComplete);
   };
-  
+
   render() {
     var main, footer;
     var activeCount = getActiveCount(this.props.viewer);
@@ -71,9 +71,9 @@ class App extends React.Component {
         </section>
       );
       footer = (
-        <Footer 
+        <Footer
             viewer={this.props.viewer}
-            showing={this.state.showing}  
+            showing={this.state.showing}
             clearCompleted={()=>Relay.Store.commitUpdate(new ClearCompleted({viewer:this.props.viewer}))}
         />
       );

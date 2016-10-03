@@ -1,7 +1,5 @@
-Django == 1.9.5
-django-filter == 0.13.0
+Django >= 1.10
+django-filter == 0.14.0
 django-graphiql == 0.4.4
-graphene == 0.8.1
-graphql-core == 0.4.18
-graphql-django-view == 1.1.0
-graphql-relay == 0.3.3
+graphene-django>=1.0
+graphene>=1.0.1

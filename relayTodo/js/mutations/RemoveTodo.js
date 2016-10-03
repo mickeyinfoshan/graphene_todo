@@ -11,16 +11,16 @@ class RemoveTodo extends Relay.Mutation {
         fragment on User {
             id
         }
-      `,  
+      `,
     };
-    
+
     getMutation() {
         return Relay.QL`mutation{removeTodo}`;
     }
-    
+
     getFatQuery() {
         return Relay.QL`
-            fragment on RemoveTodo {
+            fragment on RemoveTodoPayload {
                 viewer {
                     totalCount,
                     completedCount,
@@ -29,11 +29,11 @@ class RemoveTodo extends Relay.Mutation {
             }
         `;
     }
-    
+
     getVariables() {
         return {id : this.props.todo.id}
     }
-    
+
     getConfigs() {
         return [{
             type : "NODE_DELETE",
