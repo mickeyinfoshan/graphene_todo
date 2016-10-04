@@ -1,15 +1,15 @@
 import Relay from 'react-relay';
 
 class ClearCompleted extends Relay.Mutation {
-    
+
     static fragments = {
         viewer : ()=>Relay.QL`
             fragment on User {
                 id
             }
-        `,  
+        `,
     };
-    
+
     getMutation() {
         return Relay.QL`
             mutation {
@@ -17,20 +17,20 @@ class ClearCompleted extends Relay.Mutation {
             }
         `;
     }
-    
+
     getVariables() {
         return {}
     }
-    
+
     getFatQuery() {
         return Relay.QL`
-            fragment on ClearCompletedTodo {
+            fragment on ClearCompletedTodoPayload {
                 viewer,
                 deletedTodoIds
             }
         `;
     }
-    
+
     getConfigs() {
         return [{
             type : "NODE_DELETE",

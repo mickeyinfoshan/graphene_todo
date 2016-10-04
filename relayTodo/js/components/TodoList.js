@@ -11,7 +11,7 @@ import { todoFilter } from '../const';
 import {getShowingFromHash} from '../utils';
 
 export function mapShowingToCompletedVariable(showing) {
-    var completed; 
+    var completed;
     switch (showing) {
         case todoFilter.Any:
             completed = null;
@@ -31,21 +31,21 @@ export function mapShowingToCompletedVariable(showing) {
 }
 
 class TodoList extends React.Component {
-    
+
     componentWillReceiveProps(nextProps) {
         if(nextProps.showing !== this.props.showing) {
             this.props.relay.setVariables({
-               completed : mapShowingToCompletedVariable(nextProps.showing) 
+               completed : mapShowingToCompletedVariable(nextProps.showing)
             });
         }
     }
-    render() {    
+    render() {
         var todos = this.props.viewer.todos.edges.map((edge)=> {
             var todo = edge.node;
             return (
-                <Todo todo={todo} 
-                      key={todo.id} 
-                      toggleComplete={ ()=>Relay.Store.commitUpdate(new ToggleTodoComplete({todo, viewer:this.props.viewer})) } 
+                <Todo todo={todo}
+                      key={todo.id}
+                      toggleComplete={ ()=>Relay.Store.commitUpdate(new ToggleTodoComplete({todo, viewer:this.props.viewer})) }
                       remove={ ()=>Relay.Store.commitUpdate(new RemoveTodo({viewer : this.props.viewer, todo})) }
                       updateTodoText={ text=>Relay.Store.commitUpdate(new UpdateTodoText({viewer:this.props.viewer, todo, text})) }
                 />
@@ -54,7 +54,7 @@ class TodoList extends React.Component {
         return (<ul className="todo-list">
             {todos}
         </ul>);
-        
+
     }
 }
 
@@ -63,14 +63,14 @@ TodoList = Relay.createContainer(TodoList, {
        limit : 2147483647,
        completed : mapShowingToCompletedVariable(getShowingFromHash())
    },
-   
+
    fragments : {
        viewer : ()=>Relay.QL`
             fragment on User {
                 ${ToggleTodoComplete.getFragment("viewer")},
                 ${RemoveTodo.getFragment("viewer")},
                 ${UpdateTodoText.getFragment("viewer")},
-                todos(first:$limit, completed : $completed){
+                todos(first:$limit, completed:$completed){
                     edges {
                         node {
                             id,
@@ -78,7 +78,7 @@ TodoList = Relay.createContainer(TodoList, {
                             ${Todo.getFragment('todo')},
                             ${ToggleTodoComplete.getFragment('todo')},
                             ${RemoveTodo.getFragment("todo")},
-                            ${UpdateTodoText.getFragment("todo")},    
+                            ${UpdateTodoText.getFragment("todo")},
                         }
                     }
                 }

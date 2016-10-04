@@ -6,17 +6,17 @@ class UpdateTodoText extends Relay.Mutation {
             updateTodoText
         }`
     }
-    
+
     getVariables() {
         return {
             id : this.props.todo.id,
             text : this.props.text
         };
     }
-    
+
     getFatQuery() {
         return Relay.QL`
-            fragment on UpdateTodoText {
+            fragment on UpdateTodoTextPayload {
                 viewer {
                     todos
                 }
@@ -26,17 +26,17 @@ class UpdateTodoText extends Relay.Mutation {
             }
         `;
     }
-    
+
     getConfigs() {
         return [{
            type : "FIELDS_CHANGE",
            fieldIDs : {
                viewer : this.props.viewer.id,
                todo : this.props.todo.id
-           } 
+           }
         }];
     }
-    
+
     static fragments = {
         viewer : ()=>Relay.QL`
             fragment on User {

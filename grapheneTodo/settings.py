@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'todos',
     'django_graphiql',
-    'graphene.contrib.django',
+    'graphene_django',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -84,6 +84,13 @@ DATABASES = {
     }
 }
 
+# GraphQL Settings
+# http://docs.graphene-python.org/projects/django/en/latest/tutorial.html#update-settings
+
+GRAPHENE = {
+    'SCHEMA': 'grapheneTodo.schema.schema',
+    'SCHEMA_OUTPUT': './relayTodo/data/schema.json',
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators

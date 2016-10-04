@@ -11,20 +11,20 @@ class ToggleTodoCompelete extends Relay.Mutation {
         fragment on User {
             id
         }
-      `,  
+      `,
     };
-    
+
     getMutation() {
         return Relay.QL`mutation{toggleTodoComplete}`
     }
-    
+
     getVariables() {
         return {id : this.props.todo.id}
     }
-    
+
     getFatQuery() {
         return Relay.QL`
-            fragment on ToggleTodoComplete {
+            fragment on ToggleTodoCompletePayload {
                 viewer{
                     todos,
                     completedCount
@@ -35,7 +35,7 @@ class ToggleTodoCompelete extends Relay.Mutation {
             }
         `;
     }
-    
+
     getConfigs() {
         return [{
             type : "FIELDS_CHANGE",
